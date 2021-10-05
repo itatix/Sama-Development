@@ -8,7 +8,7 @@ class SaleOrder(models.Model):
     real_margin = fields.Monetary(string="Margen Real", compute='_compute_real_margin', store=True)
     real_margin_percent = fields.Float(string="% Margen Real", compute='_compute_real_margin', store=True)
 
-    @api.depends('order_line.real_margin', 'amount_untaxed')
+    @api.depends('order_line.real_margin','order_line.real_cost_subtotal', 'amount_untaxed')
     def _compute_real_margin(self):
         if not all(self._ids):
             for order in self:
@@ -27,6 +27,7 @@ class SaleOrder(models.Model):
                 ], ['real_margin', 'order_id'], ['order_id'])
             mapped_data = {m['order_id'][0]: m['real_margin'] for m in grouped_order_lines_data}
             for order in self:
+                order.total_real_cost = sum(order.order_line.mapped('real_cost_subtotal'))
                 order.real_margin = mapped_data.get(order.id, 0.0)
                 order.real_margin_percent = order.amount_untaxed and order.real_margin / order.amount_untaxed
 
