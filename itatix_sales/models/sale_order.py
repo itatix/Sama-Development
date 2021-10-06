@@ -6,7 +6,7 @@ class SaleOrder(models.Model):
 
     total_real_cost = fields.Monetary(string="Costo Real", compute='_compute_real_margin', store=True)
     real_margin = fields.Monetary(string="Margen Real", compute='_compute_real_margin', store=True)
-    real_margin_percent = fields.Float(string="% Margen Real", compute='_compute_real_margin', store=True)
+    real_margin_percent = fields.Float(string="Margen Real (%)", compute='_compute_real_margin', store=True)
 
     @api.depends('order_line.real_margin','order_line.real_cost_subtotal', 'amount_untaxed')
     def _compute_real_margin(self):
@@ -39,7 +39,7 @@ class SaleOrderLine(models.Model):
     real_cost = fields.Float(string="Costo Real")
     real_cost_subtotal = fields.Float(string="Costo Real Subtotal",compute='_compute_real_margin', store=True)
     real_margin = fields.Monetary(string="Margen Real", compute='_compute_real_margin', store=True)
-    real_margin_percent = fields.Float(string="% Margen Real", compute='_compute_real_margin', store=True)
+    real_margin_percent = fields.Float(string="Margen Real (%)", compute='_compute_real_margin', store=True)
 
     @api.depends('real_cost', 'product_uom_qty', 'purchase_price','price_subtotal')
     def _compute_real_margin(self):
