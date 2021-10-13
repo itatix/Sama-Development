@@ -13,7 +13,7 @@ class SaleOrder(models.Model):
         if not all(self._ids):
             for order in self:
                 order.total_real_cost = sum(order.order_line.mapped('real_cost_subtotal'))
-                order.real_margin = sum(order.order_line.mapped('real_margin'))
+                order.real_margin = sum(order.order_line.mareal_cost_subtotalpped('real_margin'))
                 order.real_margin_percent = order.amount_untaxed and order.real_margin / order.amount_untaxed
         else:
             self.env["sale.order.line"].flush(['real_margin'])
@@ -41,7 +41,7 @@ class SaleOrderLine(models.Model):
     real_margin = fields.Monetary(string="Margen Real", compute='_compute_real_margin', store=True)
     real_margin_percent = fields.Float(string="Margen Real (%)", compute='_compute_real_margin', store=True)
 
-    @api.depends('real_cost', 'product_uom_qty', 'purchase_price','price_subtotal')
+    @api.depends('real_cost', 'product_uom_qty','price_subtotal')
     def _compute_real_margin(self):
         for line in self:
             line.real_cost_subtotal = line.real_cost * line.product_uom_qty
