@@ -13,7 +13,7 @@ class SaleOrder(models.Model):
         if not all(self._ids):
             for order in self:
                 order.total_real_cost = sum(order.order_line.mapped('real_cost_subtotal'))
-                order.real_margin = sum(order.order_line.mareal_cost_subtotalpped('real_margin'))
+                order.real_margin = sum(order.order_line.mapped('real_margin'))
                 order.real_margin_percent = order.amount_untaxed and order.real_margin / order.amount_untaxed
         else:
             self.env["sale.order.line"].flush(['real_margin'])
